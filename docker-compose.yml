@@ -1,0 +1,39 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    command: postgres -c listen_addresses='*'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ac03 -d products"]
+      interval: 10s
+      timeout: 7s
+      retries: 5
+    ports:
+      - 5432:5432
+    environment:
+        - POSTGRES_USER=ac03
+        - POSTGRES_PASSWORD=123456
+        - POSTGRES_DB=products
+    volumes:
+      - pgdata:/data/postgres
+      
+  product-api:
+    container_name: product-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    volumes:
+        - .:/usr/app
+
+volumes:
+  pgdata:
+    driver: local

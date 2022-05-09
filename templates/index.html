@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <title>Create Product</title>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-type="module">
+    const Home = () => {
+      const name = React.useRef(null);
+      const category = React.useRef(null);
+      const price = React.useRef(null);
+      const [result, setResult] = React.useState(null);
+      const [error, setError] = React.useState(null);
+
+      const handleRequest = async () => {
+        event.preventDefault();
+        try {
+          const { data } = await axios.post('http://127.0.0.1:5000/newproduct', {
+            name: name.current.value,
+            category: category.current.value,
+            price: price.current.value,
+          });
+          console.log(data);
+          setResult(true);
+        } catch (error) {
+          console.log(error);
+          setError('Erro na request');
+        }
+      };
+
+      return (
+        <form onSubmit={handleRequest}>
+          <label htmlFor='name1'>Nome:</label>
+          <br />
+          <input type='text' id='name1' name='name1' ref={name} />
+          <br />
+          <label htmlFor='category1'>Categoria:</label>
+          <br />
+          <input type='text' id='category1' name='category1' ref={category} />
+          <br />
+          <label htmlFor='price1'>Preço:</label>
+          <br />
+          <input type='number' id='price1' name='price1' ref={price} />
+          <br />
+          <br />
+          <a href='/list'>
+            <p>Lista de Produtos</p>
+          </a>
+          <br />
+          <button type='submit'>Enviar</button>
+          {result && <h1>Produto cadastrado com sucesso.</h1>}
+          {error && <h1>Ocorreu um erro na requisição. Verifique o console</h1>}
+        </form>
+      );
+    };
+    ReactDOM.render(<Home />, document.getElementById('root'));
+  </script>
+</body>
+
+</html>

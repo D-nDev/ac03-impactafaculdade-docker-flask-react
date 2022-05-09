@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <title>Products List</title>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-type="module">
+    const List = () => {
+      const [result, setResult] = React.useState([]);
+      const [error, setError] = React.useState(null);
+
+      const getproducts = async () => {
+        try {
+          const { data } = await axios.get('http://127.0.0.1:5000/allproducts');
+          console.log(data);
+          setResult(data);
+        } catch (error) {
+          console.log(error);
+          setError('Erro na request');
+        }
+      };
+
+      React.useEffect(() => {
+        getproducts();
+      }, []);
+
+      return (
+        <>
+          <div>
+            {result.length >= 1 ? (
+              result.map((product) => {
+                return (
+                  <div key={product.id}>
+                    <h1>Nome: {product.name}</h1>
+                    <p>Categoria: {product.category}</p>
+                    <p>Preço: {product.price.toFixed(2)}</p>
+                  </div>
+                );
+              })
+            ) : (
+              <h1>Nenhum Produto cadastrado</h1>
+            )}
+            <br />
+            <a href='/'>
+              <p>Voltar</p>
+            </a>
+            <br />
+            {error && <h1>Ocorreu um erro na requisição. Verifique o console</h1>}
+          </div>
+        </>
+      );
+    };
+    ReactDOM.render(<List />, document.getElementById('root'));
+  </script>
+</body>
+
+</html>
