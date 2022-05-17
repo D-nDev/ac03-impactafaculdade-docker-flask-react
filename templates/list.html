@@ -22,7 +22,7 @@
 
       const getproducts = async () => {
         try {
-          const { data } = await axios.get('http://127.0.0.1:5000/allproducts');
+          const { data } = await axios.get(`${location.protocol}//${location.host}/allproducts`);
           console.log(data);
           setResult(data);
         } catch (error) {
